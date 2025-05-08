@@ -81,7 +81,8 @@ export class AuthService {
         if (isAuth) {
           const user: IUser = { login, psw };
           this.auth(user, isRememberMe);
-          this.router.navigate(['tickets/tickets-list']);
+          
+          this.router.navigate(['tickets', 'ticket-list']);
         }
       })
     );

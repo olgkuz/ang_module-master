@@ -3,7 +3,8 @@ import { MessageService } from 'primeng/api';
 import { AuthService } from "../../../services/auth/auth.service";
 import { IUser } from "../../../models/users";
 import { ConfigService } from "../../../services/config/config.service";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ServerError } from 'src/app/models/error';
 
 @Component({
   selector: 'app-registration',
@@ -18,6 +19,7 @@ export class RegistrationComponent implements OnInit {
   email: string = '';
   isRemember: boolean = false;
   isShowCardNumber: boolean = false;
+  saveUserInStore: any;
 
   constructor(
     private authService: AuthService,
@@ -46,14 +48,15 @@ export class RegistrationComponent implements OnInit {
 
     this.http.post<IUser>('http://localhost:3000/users/', user).subscribe(
       (data: IUser) => { 
-        if (this.isRemember) {
-          const userJsonStr = JSON.stringify(user);
-          window.localStorage.setItem('user_' + user.login, userJsonStr);
+        if (this.saveUserInStore) {
+          const objUserJsonStr = JSON.stringify(user);
+          window.localStorage.setItem('user_' + user.login, objUserJsonStr);
         }
         this.messageService.add({ severity: 'success', summary: 'Регистрация прошла успешно' });
       },
-      (error) => {
-        this.messageService.add({ severity: 'warn', summary: 'Пользователь уже зарегистрирован' });
+      (err:HttpErrorResponse) => {
+        const serverError = <ServerError>err.error
+        this.messageService.add({ severity: 'warn', summary: serverError.errorText });
       }
     );
   }

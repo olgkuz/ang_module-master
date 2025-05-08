@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { MessageService } from "primeng/api";
 import { Router } from '@angular/router';
 import { IUser } from '../../../models/users'; 
-import { AuthService } from "../../../services/auth/auth.service"; // <<< добавили сюда
+import { AuthService } from "../../../services/auth/auth.service"; 
 
 @Component({
   selector: 'app-authorization',
@@ -12,47 +12,34 @@ import { AuthService } from "../../../services/auth/auth.service"; // <<< доб
 })
 export class AuthorizationComponent implements OnInit {
   login: string = '';
-  psw: string = ''; // вместо password
+  psw: string = ''; 
   cardNumber: string = '';
   isRememberMe: boolean = false;
   isHaveCard: boolean = false;
 
   constructor(
-    private http: HttpClient,
+    private authService: AuthService,        
     private messageService: MessageService,
-    private router: Router,
-    private authService: AuthService  // <<< добавили сюда
+    private router: Router
   ) {}
+  
 
   ngOnInit(): void {}
 
   ngOnDestroy(): void {}
 
   onAuth(): void {
-    const authUser: IUser = {
-      login: this.login,
-      psw: this.psw,
-    };
-
-    this.http.post<boolean>('http://localhost:3000/users/' + authUser.login, authUser).subscribe({
-      next: (data) => {
-        if (data) {
-          // сохраняем в сервис
-          this.authService.setUser(authUser);
-
-          if (this.isRememberMe) {
-            const userJsonStr = JSON.stringify(authUser);
-            localStorage.setItem('user_' + authUser.login, userJsonStr);
-          }
-
-          this.messageService.add({ severity: 'success', summary: 'Вы успешно авторизованы!' });
-          this.router.navigate(['tickets/tickets-list']); 
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Неверный логин или пароль!' });
-        }
+    this.authService.authUser(this.login, this.psw, this.isRememberMe).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Вы успешно авторизованы!' });
+  
+        
+        setTimeout(() => {
+          this.router.navigate(['tickets/ticket-list']);
+        }, 0);
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Ошибка авторизации!' });
+        this.messageService.add({ severity: 'warn', summary: 'Ошибка авторизации!' });
       }
     });
   }
