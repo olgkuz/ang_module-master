@@ -74,7 +74,7 @@ export class AuthService {
     return this.isAuthenticated ? 'my-token' : null;
   }
 
-  // 🔥 Авторизация через сервер
+  //  Авторизация через сервер
   authUser(login: string, psw: string, isRememberMe: boolean): Observable<boolean> {
     return this.http.post<boolean>(`http://localhost:3000/users/${login}`, { login, psw }).pipe(
       tap((isAuth) => {
@@ -88,7 +88,7 @@ export class AuthService {
     );
   }
 
-  // 🔥 Регистрация через сервер
+  //  Регистрация через сервер
   addUser(user: IUser, isRememberMe?: boolean): Observable<IUser> {
     return this.http.post<IUser>('http://localhost:3000/users', user).pipe(
       tap((newUser) => {
@@ -108,7 +108,7 @@ export class AuthService {
     if (!this.currentUser) {
       return;
     }
-    this.currentUser.psw = newPassword; // исправил на psw
+    this.currentUser.psw = newPassword; 
     localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(this.currentUser));
   }
 }
