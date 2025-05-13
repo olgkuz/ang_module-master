@@ -16,8 +16,10 @@ export class AuthorizationComponent implements OnInit {
   cardNumber: string = '';
   isRememberMe: boolean = false;
   isHaveCard: boolean = false;
+ 
 
   constructor(
+    private http: HttpClient,
     private authService: AuthService,        
     private messageService: MessageService,
     private router: Router
@@ -28,19 +30,39 @@ export class AuthorizationComponent implements OnInit {
 
   ngOnDestroy(): void {}
 
-  onAuth(): void {
-    this.authService.authUser(this.login, this.psw, this.isRememberMe).subscribe({
-      next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Вы успешно авторизованы!' });
-  
-        
-        setTimeout(() => {
-          this.router.navigate(['tickets/ticket-list']);
-        }, 0);
-      },
-      error: () => {
-        this.messageService.add({ severity: 'warn', summary: 'Ошибка авторизации!' });
-      }
-    });
-  }
+  vipStatusSelected(): void{}
+
+ onAuth(ev: Event): void {
+  const authUser: IUser = {
+    psw: this.psw,
+    login: this.login,
+    cardNumber: this.cardNumber
+  };
+
+  this.http.post<{ access_token: string }>(`http://localhost:3000/users/${authUser.login}`,
+    authUser).subscribe({
+    next: (data) => {
+      const token: string = data.access_token;
+
+      // сохранила токен через authService
+      this.authService.setUser(authUser);
+      localStorage.setItem('auth_token', token);
+
+      this.authService.authUser(this.login, this.psw, this.isRememberMe).subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Вы успешно авторизованы!' });
+          setTimeout(() => {
+            this.router.navigate(['tickets', 'ticket-list']);
+          }, 0);
+        },
+        error: () => {
+          this.messageService.add({ severity: 'warn', summary: 'Ошибка авторизации!' });
+        }
+      });
+    },
+    error: () => {
+      this.messageService.add({ severity: 'warn', summary: 'Ошибка получения токена!' });
+    }
+  });
+}
 }
