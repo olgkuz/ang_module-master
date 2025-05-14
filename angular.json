@@ -86,6 +86,7 @@
             },
             "development": {
               "browserTarget": "ticketSales2022:build:development"
+              
             }
           },
           "defaultConfiguration": "development"

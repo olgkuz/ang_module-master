@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from "primeng/api";
 import { Router } from '@angular/router';
 import { IUser } from '../../../models/users'; 
 import { AuthService } from "../../../services/auth/auth.service"; 
+import { ServerError } from 'src/app/models/error';
 
 @Component({
   selector: 'app-authorization',
@@ -39,30 +40,19 @@ export class AuthorizationComponent implements OnInit {
     cardNumber: this.cardNumber
   };
 
-  this.http.post<{ access_token: string }>(`http://localhost:3000/users/${authUser.login}`,
-    authUser).subscribe({
-    next: (data) => {
+ this.http.post<{ access_token: string,id:string }>(
+  'http://localhost:3000/users/'+authUser.login,authUser).subscribe.
+   authUser.id = data.id;
+      this.userService.setUser(authUser);
       const token: string = data.access_token;
-
-      // сохранила токен через authService
-      this.authService.setUser(authUser);
-      localStorage.setItem('auth_token', token);
-
-      this.authService.authUser(this.login, this.psw, this.isRememberMe).subscribe({
-        next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Вы успешно авторизованы!' });
-          setTimeout(() => {
-            this.router.navigate(['tickets', 'ticket-list']);
-          }, 0);
-        },
-        error: () => {
+      this.userService.setToken(token);
+      this.userService.setToStore(token);
+      this.router.navigate(['tickets', 'ticket-list']);
+          
+        }, (err:HttpErrorResponse) => {
+          const serverError = <ServerError>err.error;
           this.messageService.add({ severity: 'warn', summary: 'Ошибка авторизации!' });
-        }
+        
       });
-    },
-    error: () => {
-      this.messageService.add({ severity: 'warn', summary: 'Ошибка получения токена!' });
-    }
-  });
-}
-}
+    
+ 
