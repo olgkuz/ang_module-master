@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { MessageService } from "primeng/api";
+import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { IUser } from '../../../models/users'; 
-import { AuthService } from "../../../services/auth/auth.service"; 
+import { IUser } from '../../../models/users';
 import { ServerError } from 'src/app/models/error';
+import { UserService } from '../../../services/user/user.service';
 
 @Component({
   selector: 'app-authorization',
@@ -12,47 +12,50 @@ import { ServerError } from 'src/app/models/error';
   styleUrls: ['./authorization.component.scss'],
 })
 export class AuthorizationComponent implements OnInit {
-  login: string = '';
-  psw: string = ''; 
-  cardNumber: string = '';
-  isRememberMe: boolean = false;
-  isHaveCard: boolean = false;
- 
+  login = '';
+  psw = '';
+  cardNumber = '';
+  isRememberMe = false;
+  isHaveCard = false;
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,        
+    private userService: UserService,
     private messageService: MessageService,
     private router: Router
   ) {}
-  
 
   ngOnInit(): void {}
 
-  ngOnDestroy(): void {}
+  onAuth(ev: Event): void {
+    const authUser: IUser = {
+      login: this.login,
+      psw: this.psw,
+      cardNumber: this.cardNumber
+    };
 
-  vipStatusSelected(): void{}
+    this.http.post<{ access_token: string; id: string }>(
+      `http://localhost:3000/users/${authUser.login}`,
+      authUser
+    ).subscribe({
+      next: (data) => {
+        authUser.id = data.id;
 
- onAuth(ev: Event): void {
-  const authUser: IUser = {
-    psw: this.psw,
-    login: this.login,
-    cardNumber: this.cardNumber
-  };
+        this.userService.setUser(authUser);
+        this.userService.setToken(data.access_token);
+        this.userService.setToStore(data.access_token);
 
- this.http.post<{ access_token: string,id:string }>(
-  'http://localhost:3000/users/'+authUser.login,authUser).subscribe.
-   authUser.id = data.id;
-      this.userService.setUser(authUser);
-      const token: string = data.access_token;
-      this.userService.setToken(token);
-      this.userService.setToStore(token);
-      this.router.navigate(['tickets', 'ticket-list']);
-          
-        }, (err:HttpErrorResponse) => {
-          const serverError = <ServerError>err.error;
-          this.messageService.add({ severity: 'warn', summary: 'Ошибка авторизации!' });
-        
-      });
-    
+        this.messageService.add({ severity: 'success', summary: 'Вы успешно авторизованы!' });
+        this.router.navigate(['tickets', 'ticket-list']);
+      },
+      error: (err: HttpErrorResponse) => {
+        const serverError = err.error as ServerError;
+        this.messageService.add({
+          severity: 'warn',
+          summary: serverError?.errorText || 'Ошибка получения токена!'
+        });
+      }
+    });
+  }
+}
  

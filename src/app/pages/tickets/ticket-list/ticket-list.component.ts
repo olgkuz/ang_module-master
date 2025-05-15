@@ -33,7 +33,7 @@ export class TicketListComponent implements OnInit {
   search: string = '';
   private ticketFilterType: ITourTypeSelect = {label: 'Все', value: 'all'};
   inputForm = new FormGroup({
-    inputControl: new FormControl('')
+  inputControl: new FormControl('')
   })
 
   @ViewChild('tourWrap') tourWrap: ElementRef;
@@ -64,6 +64,10 @@ export class TicketListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.ticketService.ticketUpdateSubject$.subscribe((data)=>{
+      this.tickets = data;
+    })
     this.ticketStorage.fetchTickets();
     this.tourUnsubscriber = this.ticketService.getTicketTypeObservable().subscribe((data: ITourTypeSelect) => {
       if (data) {

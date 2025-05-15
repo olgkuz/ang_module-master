@@ -7,6 +7,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth/auth.service";
 import {forkJoin, fromEvent, Subscription} from "rxjs";
 import {TicketService} from "../../../services/ticket/ticket.service";
+import { IOrder } from 'src/app/models/order';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-ticket-item',
@@ -27,12 +29,14 @@ export class TicketItemComponent implements OnInit {
   private ticketSearchSubsc: Subscription;
   private ticketRestSub: Subscription;
   searchTypes = [1, 2, 3];
+  
 
   constructor(
     private route: ActivatedRoute,
     private ticketStorage: TicketStorageService,
     private authService: AuthService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private userService: UserService
   ) {
   }
 
@@ -106,6 +110,20 @@ export class TicketItemComponent implements OnInit {
     console.log(this.userForm.value)
     this.ticketService.sendTourData(this.userForm.value).subscribe(console.log)
   }
+  initTour():void {
+    const userData = this.userForm.getRawValue();
+    const postData = {...this.ticket,...userData};
+
+    const userId = this.userService.getUser()?.id || null;
+    const postObj: IOrder = {
+      age: postData.age,
+      birthDay: postData.birthDay,
+      cardNumber: postData.cardNumber,
+      tourId: postData._id,
+      userId: userId
+    }
+    this.ticketService.sendTourData(postObj).subscribe()
+  } 
 
   initSearchTour() {
     console.log('initSearchTour')
