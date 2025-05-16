@@ -34,10 +34,10 @@ export class RegistrationComponent implements OnInit {
 
   ngOnDestroy(): void {}
 
-   onAuth(): void {
+   regisration(ev:Event): void | boolean{
     if (this.psw !== this.repeatPassword) {
-      this.messageService.add({ severity: 'error', summary: 'Пароли не совпадают' });
-      return;
+      this.messageService.add({ severity: 'error', summary: 'Пароли не совпадают', life: 2000 });
+      return false;
     }
 
     const user: IUser = {
