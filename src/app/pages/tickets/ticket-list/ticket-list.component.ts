@@ -40,6 +40,7 @@ export class TicketListComponent implements OnInit {
   @ViewChild('ticketSearch') ticketSearch: ElementRef;
 
   searchTicketSub: Subscription;
+  tickets:any = [];
 
   constructor(
     private router: Router,
@@ -49,9 +50,10 @@ export class TicketListComponent implements OnInit {
   ) {
   }
 
-  get tickets() {
-    return this.ticketStorage.tickets;
-  }
+  //get tickets() {
+   // return this.ticketStorage.tickets;
+  //}
+  
 
   get filteredTickets() {
     const search = this.search.toLowerCase()
@@ -64,16 +66,17 @@ export class TicketListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.ticketService.ticketUpdateSubject$.subscribe((data)=>{
-      this.ticketStorage.tickets = data;
-    })
     this.ticketStorage.fetchTickets();
     this.tourUnsubscriber = this.ticketService.getTicketTypeObservable().subscribe((data: ITourTypeSelect) => {
       if (data) {
         this.ticketFilterType = {...this.ticketFilterType, ...data};
       }
     });
+    this.tickets = this.ticketStorage.tickets;
+    this.ticketService.ticketUpdateSubject$.subscribe((data)=>{
+      this.tickets = this.tickets.concat(data);
+    })
+   
   }
 
   ngOnDestroy() {

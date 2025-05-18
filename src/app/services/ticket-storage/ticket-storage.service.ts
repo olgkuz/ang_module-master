@@ -13,9 +13,9 @@ export class TicketStorageService {
   get tickets () {
     return this.ticketStorage;
   }
-  set tickets(data: ITour[]) {
-    this.ticketStorage = data;
-  }
+  //set tickets(data: ITour[]) {
+    //this.ticketStorage = data;
+  //}
 
   getTicket(id: string) {
     return this.ticketStorage.find((e) => e.id === id);

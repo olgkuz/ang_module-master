@@ -41,6 +41,20 @@ export class TicketItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    const routeIdParam = this.route.snapshot.paramMap.get('id')
+    const queryIdParam = this.route.snapshot.queryParamMap.get ('id')
+
+    const paramId = routeIdParam || queryIdParam;
+    if ( paramId) {
+      this.tourId = paramId;
+    }
+
+    this.getTicket(this.tourId)
+
+    this.user = this.userService.getUser()
+
+
     this.ticketStorage.fetchTickets().subscribe(this.setCurrentTicket.bind(this));
     this.setCurrentTicket();
 
@@ -60,7 +74,13 @@ export class TicketItemComponent implements OnInit {
       this.nearestTours = this.ticketService.transformData(tours, locations);
     })
   }
-
+  
+  public getTicket(id: string):void{
+    this.ticketsService.getTicketById(id).subscribe(data:)=>{
+      this.ticket = data
+    }
+  );
+  }
   ngAfterViewInit() {
     console.log(this.ticketSearch)
     if (!this.ticketSearch) {
@@ -114,13 +134,14 @@ export class TicketItemComponent implements OnInit {
     const userData = this.userForm.getRawValue();
     const postData = {...this.ticket,...userData};
 
-    const userId = this.userService.getUser()?.id || null;
+    //const userId = this.userService.getUser()?.id || null;
     const postObj: IOrder = {
       age: postData.age,
       birthDay: postData.birthDay,
       cardNumber: postData.cardNumber,
       tourId: postData._id,
-      userId: userId
+      orderPerson:userData
+      //userId: userId
     }
     this.ticketService.sendTourData(postObj).subscribe()
   } 
