@@ -65,4 +65,12 @@ export class TicketService {
     return this.ticketServiceRest.sendTourData(data)
   }
 }
+  getTicketById(id:string):Observable<ITour> {
+   return this.ticketServiceRest.getTicketById(id),
+  }
+
+  createTour(body:any){
+    return this.ticketServiceRest.createTour(body)
+  }
+
 

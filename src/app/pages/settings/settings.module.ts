@@ -8,20 +8,23 @@ import {ChangePasswordComponent} from './change-password/change-password.compone
 import {InputTextModule} from "primeng/inputtext";
 import {ToastModule} from "primeng/toast";
 import {MessageService} from "primeng/api";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ButtonModule} from "primeng/button";
 import {StatisticComponent} from './statistic/statistic.component';
 import {TableModule} from "primeng/table";
+import { TourLoaderComponent } from './tour-loader/tour-loader.component';
 
 
 @NgModule({
   declarations: [
     SettingsComponent,
     ChangePasswordComponent,
-    StatisticComponent
+    StatisticComponent,
+    TourLoaderComponent
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     SettingsRoutingModule,
     TabViewModule,
     InputTextModule,
@@ -29,7 +32,8 @@ import {TableModule} from "primeng/table";
     FormsModule,
     ButtonModule,
     TableModule,
-  ],
+    TourLoaderComponent
+],
   providers: [
     MessageService
   ]

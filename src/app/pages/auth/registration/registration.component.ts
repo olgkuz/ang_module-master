@@ -34,35 +34,38 @@ export class RegistrationComponent implements OnInit {
 
   ngOnDestroy(): void {}
 
-   regisration(ev:Event): void | boolean{
-    if (this.psw !== this.repeatPassword) {
-      this.messageService.add({ severity: 'error', summary: 'Пароли не совпадают', life: 2000 });
-      return false;
-    }
-
-    const user: IUser = {
-      login: this.login,
-      psw: this.psw,
-      cardNumber: this.cardNumber,
-      email: this.email
-    };
-
-    this.http.post<{ access_token: string; id: string }>('http://localhost:3000/users/', user).subscribe(
-      (data) => {
-        user.id = data.id;
-        this.userService.setUser(user);
-        this.userService.setToken(data.access_token);
-        this.userService.setToStore(data.access_token);
-        this.messageService.add({ severity: 'success', summary: 'Регистрация прошла успешно' });
-        this.router.navigate(['tickets', 'ticket-list']);
-      },
-      (err: HttpErrorResponse) => {
-        const serverError = err.error as ServerError;
-        this.messageService.add({
-          severity: 'warn',
-          summary: serverError?.errorText || 'Ошибка регистрации'
-        });
-      }
-    );
+regisration(ev: Event): void | boolean {
+  if (this.psw !== this.repeatPassword) {
+    this.messageService.add({ severity: 'error', summary: 'Пароли не совпадают', life: 2000 });
+    return false;
   }
+
+  const user: IUser = {
+    login: this.login,
+    psw: this.psw,
+    cardNumber: this.cardNumber,
+    email: this.email
+  };
+
+  
+  console.log('Отправка на регистрацию:', user);
+
+  this.http.post<{ access_token: string; id: string }>('http://localhost:3000/users/', user).subscribe(
+    (data) => {
+      user.id = data.id;
+      this.userService.setUser(user);
+      this.userService.setToken(data.access_token);
+      this.userService.setToStore(data.access_token);
+      this.messageService.add({ severity: 'success', summary: 'Регистрация прошла успешно' });
+      this.router.navigate(['tickets', 'ticket-list']);
+    },
+    (err: HttpErrorResponse) => {
+      const serverError = err.error as ServerError;
+      this.messageService.add({
+        severity: 'warn',
+        summary: serverError?.errorText || 'Ошибка регистрации'
+      });
+    }
+  );
+}
 }

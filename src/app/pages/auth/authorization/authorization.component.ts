@@ -35,7 +35,7 @@ export class AuthorizationComponent implements OnInit {
     };
 
     this.http.post<{ access_token: string; id: string }>(
-      `http://localhost:3000/users/${authUser.login}`,
+      `http://localhost:3000/users/login`,
       authUser
     ).subscribe({
       next: (data) => {
