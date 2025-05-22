@@ -7,6 +7,7 @@ import {INearestTour, ITour, ITourLocation, ITourTypeSelect} from "../../models/
   providedIn: 'root'
 })
 export class TicketService {
+  
   private ticketSubject = new Subject<ITourTypeSelect>()
   readonly $ticketType = this.ticketSubject.asObservable()
 
@@ -64,13 +65,13 @@ export class TicketService {
   sendTourData(data: any) {
     return this.ticketServiceRest.sendTourData(data)
   }
+
+  getTicketById(id:string):Observable <ITour>  {
+   return this.ticketServiceRest.getTicketById(id)
+  }
+
+  createTour(formParams: FormData) {
+  return this.ticketServiceRest.createTour(formParams);
 }
-  getTicketById(id:string):Observable<ITour> {
-   return this.ticketServiceRest.getTicketById(id),
-  }
 
-  createTour(body:any){
-    return this.ticketServiceRest.createTour(body)
-  }
-
-
+}
