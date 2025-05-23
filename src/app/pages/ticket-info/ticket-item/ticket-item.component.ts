@@ -103,11 +103,9 @@ export class TicketItemComponent implements OnInit {
     const userData = this.userForm.getRawValue();
 
     const postObj: IOrder = {
-      age: userData.age,
-      birthDay: userData.birthday,
-      cardNumber: userData.cardNumber,
-      tourId: this.ticket.id,
-      userId: this.user?.id || ''
+      
+      tourId: postData._id,
+      orderPerson:userData
     };
 
     this.ticketService.sendTourData(postObj).subscribe({

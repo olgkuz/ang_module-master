@@ -1,7 +1,5 @@
 export interface IOrder {
-    age: string | null,
-    birthDay: string | null,
-    cardNumber: string | null,
+    
     tourId: string | null,
     userId?: string | null,
     orderPerson?: IOrderPerson
@@ -15,4 +13,8 @@ export interface IOrderPerson {
     birthData:string;
     age:number
     citizenship:string;
+}
+export interface IOrderPerson {
+    data: IOrder[],
+    count:number
 }
