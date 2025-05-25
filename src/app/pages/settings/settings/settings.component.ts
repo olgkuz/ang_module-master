@@ -2,11 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {ObservableExampleService} from "../../../services/observable-example/observable-example.service";
 import {Subject, Subscription, take, takeUntil} from "rxjs";
 import {SettingsService} from "../../../services/settings/settings.service";
+import { TourLoaderComponent } from "../tour-loader/tour-loader.component";
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+  styleUrls: ['./settings.component.scss'],
+  
 })
 export class SettingsComponent implements OnInit {
   settingsData: Subscription;

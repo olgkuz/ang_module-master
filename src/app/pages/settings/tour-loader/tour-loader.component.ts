@@ -1,19 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TicketService } from 'src/app/services/ticket/ticket.service';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
+import { ITour } from 'src/app/models/tours';
 
 @Component({
   selector: 'app-tour-loader',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    InputTextModule
-  ],
+  
+
   templateUrl: './tour-loader.component.html',
   styleUrls: ['./tour-loader.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,16 +28,18 @@ export class TourLoaderComponent implements OnInit {
 
   createTour(): void {
     const tourDataRow = this.tourForm.getRawValue();
-    const formParams = new FormData();
+    let formParams = new FormData();
+    if(typeof tourDataRow === "object"){
 
     for (let prop in tourDataRow) {
       formParams.append(prop, tourDataRow[prop]);
     }
+    }
 
     this.ticketService.createTour(formParams).subscribe((data) => {
       console.log('Tour created:', data);
-    });
-  }
+});
+}
 
   selectFile(ev: any): void {
     if (ev.target.files.length > 0) {

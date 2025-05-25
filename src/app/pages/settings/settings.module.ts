@@ -20,7 +20,7 @@ import { TourLoaderComponent } from './tour-loader/tour-loader.component';
     SettingsComponent,
     ChangePasswordComponent,
     StatisticComponent,
-    
+    TourLoaderComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +32,7 @@ import { TourLoaderComponent } from './tour-loader/tour-loader.component';
     FormsModule,
     ButtonModule,
     TableModule,
-    TourLoaderComponent,
+    
     
 ],
   providers: [

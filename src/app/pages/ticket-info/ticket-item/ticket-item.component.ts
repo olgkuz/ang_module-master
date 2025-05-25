@@ -99,20 +99,24 @@ export class TicketItemComponent implements OnInit {
     this.userForm.patchValue({ birthday: selected });
   }
 
-  initTour(): void {
-    const userData = this.userForm.getRawValue();
+ initTour(): void {
+  const userData = this.userForm.getRawValue();
 
-    const postObj: IOrder = {
-      
-      tourId: postData._id,
-      orderPerson:userData
-    };
-
-    this.ticketService.sendTourData(postObj).subscribe({
-      next: () => console.log('Заявка отправлена'),
-      error: () => console.log('Ошибка отправки заявки')
-    });
+  if (!this.ticket || !this.ticket.id) {
+    console.error('Тур не найден или не содержит id');
+    return;
   }
+
+  const postObj: IOrder = {
+    tourId: this.ticket.id,
+    orderPerson: userData
+  };
+
+  this.ticketService.sendTourData(postObj).subscribe({
+    next: () => console.log('Заявка отправлена'),
+    error: () => console.log('Ошибка отправки заявки')
+  });
+}
 
   initSearchTour(): void {
     const type = Math.floor(Math.random() * this.searchTypes.length);
